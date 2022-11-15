@@ -1,5 +1,8 @@
-import { Box, styled, TextField, Button } from '@mui/material'
+import { Box, styled, TextField, Button, TextFieldProps } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
+import { useState } from 'react'
+import { useAppDispatch } from 'states'
+import { addNewNote, ITodoItem } from 'states/slices/todo'
 
 const TodoWrapperSt = styled(Box)(() => ({
   display: 'flex',
@@ -29,10 +32,36 @@ const Buttonst = styled(Button)(() => ({
 }))
 
 export const TodoInput = () => {
+  const dispatch = useAppDispatch()
+  const [title, setTitle] = useState('')
+
+  const onInputChange: TextFieldProps['onChange'] = (event) => {
+    const { value } = event.target
+
+    setTitle(value)
+  }
+
+  const onAddNote = () => {
+    const newNote: ITodoItem = {
+      title,
+      createdAt: new Date().getTime(),
+      isDone: false,
+    }
+
+    dispatch(addNewNote(newNote))
+    setTitle('')
+  }
+
   return (
     <TodoWrapperSt>
-      <TextFieldSt size="small" placeholder="Note" fullWidth />
-      <Buttonst variant="contained" disableElevation>
+      <TextFieldSt
+        size="small"
+        placeholder="Note"
+        onChange={onInputChange}
+        value={title}
+        fullWidth
+      />
+      <Buttonst variant="contained" onClick={onAddNote} disableElevation>
         <AddIcon />
       </Buttonst>
     </TodoWrapperSt>

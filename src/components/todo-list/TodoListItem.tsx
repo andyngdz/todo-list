@@ -2,15 +2,19 @@ import styled from '@emotion/styled'
 import {
   Box,
   Checkbox,
+  CheckboxProps,
   ListItem,
   ListItemText,
   Typography,
 } from '@mui/material'
 import TrashCanIcon from 'assets/trash-can-icon.svg'
 
+import { format } from 'date-fns'
+import { useAppDispatch } from 'states'
+import { deleteNote, ITodoItem, makeNoteDone } from 'states/slices/todo'
+
 export interface ITodoListItemProps {
-  title: string
-  date: string
+  todoItem: ITodoItem
 }
 
 const TodoActionsWrapperSt = styled(Box)(() => ({
@@ -36,13 +40,38 @@ const TrashCanIconSt = styled('img')(() => ({
   paddingLeft: '5px',
 }))
 
-export const TodoListItem = ({ title, date }: ITodoListItemProps) => {
+export const TodoListItem = ({ todoItem }: ITodoListItemProps) => {
+  const dispatch = useAppDispatch()
+  const { id, title, createdAt, isDone } = todoItem
+
+  const atDay = format(createdAt, 'EEEE')
+  const atTime = format(createdAt, 'H:m a')
+  const textDecoration = isDone ? 'line-through' : 'unset'
+  const textOpacity = isDone ? 0.5 : 1
+
+  const onCheckboxChange: CheckboxProps['onChange'] = (_, checked) => {
+    if (id) {
+      dispatch(
+        makeNoteDone({
+          id,
+          isDone: checked,
+        })
+      )
+    }
+  }
+
+  const onDeleteNote = () => {
+    if (id) {
+      dispatch(deleteNote(id))
+    }
+  }
+
   return (
     <ListItemSt
       secondaryAction={
         <TodoActionsWrapperSt>
-          <CheckboxSt />
-          <TrashCanIconSt src={TrashCanIcon} />
+          <CheckboxSt value={isDone} onChange={onCheckboxChange} />
+          <TrashCanIconSt src={TrashCanIcon} onClick={onDeleteNote} />
         </TodoActionsWrapperSt>
       }
       disablePadding
@@ -54,6 +83,8 @@ export const TodoListItem = ({ title, date }: ITodoListItemProps) => {
               fontSize: 18,
               fontWeight: 500,
               color: '#0D0D0D',
+              textDecoration,
+              opacity: textOpacity,
             }}
           >
             {title}
@@ -63,10 +94,12 @@ export const TodoListItem = ({ title, date }: ITodoListItemProps) => {
           <Typography
             sx={{
               color: '#888888',
+              textDecoration,
+              opacity: textOpacity,
             }}
             variant="body2"
           >
-            {date}
+            {atDay} at {atTime}
           </Typography>
         }
         disableTypography

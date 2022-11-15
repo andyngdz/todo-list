@@ -1,6 +1,9 @@
 import { Box, styled } from '@mui/material'
 import backgroundImage from 'assets/header-background.png'
 import { TypographyWithoutNormalLineHeight } from 'components/typography'
+import { format } from 'date-fns'
+import { useState } from 'react'
+import { useInterval } from 'react-use'
 
 const HeaderBackgroundWrapperSt = styled(Box)(() => ({
   height: '202px',
@@ -27,6 +30,14 @@ const HeaderBackgroundContentSt = styled(Box)(() => ({
 }))
 
 export const Header = () => {
+  const [date, setDate] = useState<Date>(new Date())
+  const atDay = format(date, 'E d')
+  const atTime = format(date, 'H:mm a')
+
+  useInterval(() => {
+    setDate(new Date())
+  }, 1000)
+
   return (
     <HeaderBackgroundWrapperSt>
       <HeaderBackgroundSt />
@@ -39,7 +50,7 @@ export const Header = () => {
               color: 'white',
             }}
           >
-            Thur 9
+            {atDay}
           </TypographyWithoutNormalLineHeight>
           <TypographyWithoutNormalLineHeight
             sx={{
@@ -48,7 +59,7 @@ export const Header = () => {
               color: 'white',
             }}
           >
-            6:23 AM
+            {atTime}
           </TypographyWithoutNormalLineHeight>
         </HeaderBackgroundContentSt>
       </HeaderBackgroundContentWrapperSt>
