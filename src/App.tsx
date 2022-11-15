@@ -3,6 +3,8 @@ import { Header } from 'components/header'
 import { TodoInput } from 'components/todo-input'
 import { TodoList } from 'components/todo-list'
 import { appTheme } from 'styles/theme'
+import { Provider } from 'react-redux'
+import { store } from 'states'
 
 const AppWrapperSt = styled(Box)(() => ({
   padding: '16px',
@@ -20,15 +22,17 @@ const TodoWrapperSt = styled(Box)(() => ({
 
 function App() {
   return (
-    <ThemeProvider theme={appTheme}>
-      <AppWrapperSt>
-        <Header />
-        <TodoWrapperSt>
-          <TodoInput />
-          <TodoList />
-        </TodoWrapperSt>
-      </AppWrapperSt>
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider theme={appTheme}>
+        <AppWrapperSt>
+          <Header />
+          <TodoWrapperSt>
+            <TodoInput />
+            <TodoList />
+          </TodoWrapperSt>
+        </AppWrapperSt>
+      </ThemeProvider>
+    </Provider>
   )
 }
 
