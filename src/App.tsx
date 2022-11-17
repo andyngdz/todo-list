@@ -4,7 +4,8 @@ import { TodoInput } from 'components/todo-input'
 import { TodoList } from 'components/todo-list'
 import { appTheme } from 'styles/theme'
 import { Provider } from 'react-redux'
-import { store } from 'states'
+import { store, persistor } from 'states'
+import { PersistGate } from 'redux-persist/integration/react'
 
 const AppWrapperSt = styled(Box)(() => ({
   padding: '16px',
@@ -23,15 +24,17 @@ const TodoWrapperSt = styled(Box)(() => ({
 function App() {
   return (
     <Provider store={store}>
-      <ThemeProvider theme={appTheme}>
-        <AppWrapperSt>
-          <Header />
-          <TodoWrapperSt>
-            <TodoInput />
-            <TodoList />
-          </TodoWrapperSt>
-        </AppWrapperSt>
-      </ThemeProvider>
+      <PersistGate persistor={persistor}>
+        <ThemeProvider theme={appTheme}>
+          <AppWrapperSt>
+            <Header />
+            <TodoWrapperSt>
+              <TodoInput />
+              <TodoList />
+            </TodoWrapperSt>
+          </AppWrapperSt>
+        </ThemeProvider>
+      </PersistGate>
     </Provider>
   )
 }
